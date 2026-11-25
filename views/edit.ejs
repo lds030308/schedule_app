@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>일정 수정 - MY SCHEDULE</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div>
+        <h1 class="site-title"><a href="/">MY SCHEDULE</a></h1>
+        <p class="site-subtitle">일정 정보를 수정합니다.</p>
+      </div>
+      <a href="/" class="btn btn-secondary">목록으로</a>
+    </header>
+
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <form action="/edit/<%= schedule.id %>" method="POST" class="schedule-form">
+      <div class="form-group">
+        <label for="title">일정 제목 <span class="required">*</span></label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          maxlength="100"
+          required
+          value="<%= schedule.title %>"
+        >
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="schedule_date">일정 날짜 <span class="required">*</span></label>
+          <input
+            type="date"
+            id="schedule_date"
+            name="schedule_date"
+            required
+            value="<%= schedule.schedule_date %>"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="category_id">카테고리</label>
+          <select id="category_id" name="category_id">
+            <option value="">-- 카테고리 선택 --</option>
+            <% categories.forEach((category) => { %>
+              <option
+                value="<%= category.id %>"
+                <%= String(schedule.category_id || '') === String(category.id) ? 'selected' : '' %>
+              ><%= category.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="status">진행 상태</label>
+          <select id="status" name="status">
+            <% statuses.forEach((statusOption) => { %>
+              <option
+                value="<%= statusOption %>"
+                <%= schedule.status === statusOption ? 'selected' : '' %>
+              ><%= statusOption %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="content">일정 내용</label>
+        <textarea
+          id="content"
+          name="content"
+          rows="5"
+        ><%= schedule.content || '' %></textarea>
+      </div>
+
+      <div class="form-actions">
+        <a href="/" class="btn btn-secondary">취소</a>
+        <button type="submit" class="btn btn-primary">수정 완료</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

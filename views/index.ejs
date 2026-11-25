@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MY SCHEDULE</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div>
+        <h1 class="site-title"><a href="/">MY SCHEDULE</a></h1>
+        <p class="site-subtitle">개인 일정을 날짜순으로 간편하게 관리하세요.</p>
+      </div>
+      <a href="/add" class="btn btn-primary">+ 일정 추가</a>
+    </header>
+
+    <nav class="category-filter" aria-label="카테고리 필터">
+      <a href="/" class="filter-chip <%= !selectedCategoryId ? 'active' : '' %>">전체</a>
+      <% categories.forEach((category) => { %>
+        <a
+          href="/?category=<%= category.id %>"
+          class="filter-chip <%= selectedCategoryId === category.id ? 'active' : '' %>"
+        ><%= category.name %></a>
+      <% }) %>
+    </nav>
+
+    <main class="schedule-list">
+      <% if (schedules.length === 0) { %>
+        <div class="empty-state">
+          <p>등록된 일정이 없습니다.</p>
+          <a href="/add" class="btn btn-primary">첫 일정 등록하기</a>
+        </div>
+      <% } else { %>
+        <% schedules.forEach((schedule) => { %>
+          <% const isDone = schedule.status === '완료'; %>
+          <article class="schedule-card <%= isDone ? 'is-done' : '' %>">
+            <div class="card-top">
+              <div class="card-badges">
+                <span class="badge badge-category"><%= schedule.category_name || '미분류' %></span>
+                <span class="badge <%= isDone ? 'badge-done' : 'badge-progress' %>"><%= schedule.status %></span>
+              </div>
+              <time class="schedule-date" datetime="<%= schedule.schedule_date %>">
+                <%= schedule.schedule_date %>
+              </time>
+            </div>
+
+            <h2 class="schedule-title"><%= schedule.title %></h2>
+
+            <% if (schedule.content) { %>
+              <p class="schedule-content"><%= schedule.content %></p>
+            <% } %>
+
+            <div class="card-actions">
+              <a href="/edit/<%= schedule.id %>" class="btn btn-secondary btn-sm">수정</a>
+              <form
+                action="/delete/<%= schedule.id %>"
+                method="POST"
+                class="inline-form"
+                onsubmit="return confirm('이 일정을 삭제하시겠습니까?');"
+              >
+                <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+              </form>
+            </div>
+          </article>
+        <% }) %>
+      <% } %>
+    </main>
+  </div>
+</body>
+</html>
